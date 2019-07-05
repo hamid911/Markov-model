@@ -1,0 +1,58 @@
+ss = 20
+N = 200
+float (lambd)
+lambd = 1.2
+float (murec)
+murec = 91.25
+c = 5
+float (murep)
+murep = 60.83
+n=5
+j =ss+N+1
+AA = np.zeros(j*j)
+AA[0] = 1.0
+AA[1] = (murec*min(c,1)+murep*min(n,1))/(-lambd*N)
+i =1
+while i<=j-3:    
+    AA[i*j+i-1] = N*lambd
+    AA[(i)*j+i] = -(N*lambd+murec*min(c,i)+murep*min(n,i))
+    AA[(i)*j+i+1] = murec*min(c,i+1)+murep*min(n,i+1)
+    i+=1
+AA[j*(j-1)-2] = -N*lambd
+AA[j*(j-1)-1] = (murec*min(c,j-1)+murep*min(n,j-1))
+for u in range (0,j):
+    AA[j*(j-1)+u] = 1
+
+A = AA.reshape((j,j))   
+#inverse = np.linalg.inv(g)
+k = np.zeros(j)
+k[j-1] = 1
+b = k.reshape((j,1))
+h = np.zeros(j)
+h[j-1] = 1
+initialGuess = h.reshape((j,1))
+
+A_inverse = np.linalg.inv (A)
+x = np.dot(A_inverse,b)
+print('The steady state probabilities are:')
+#print (x)
+#print('The summation of their probabilities is: ')
+#print (np.sum(x))
+
+EBO = 0
+for ii in range (ss,ss+N+1):
+    EBO += x[ii]*ii 
+I = 0
+for iii in range (0,ss):
+    I += x[iii]*(ss-iii)
+    #print ('inventory is: ',I)
+print ('The expected inventory level is')
+print (I) 
+print('The expected backorder level is:')
+print (EBO)
+for i in range (0,ss):
+    if x[i] == 0:
+        print ('lol')
+print('The transition matrix is:')
+print (A)
+
